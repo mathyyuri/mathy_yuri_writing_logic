@@ -48,7 +48,7 @@
 <div class="container">
     <div class="header">
         <div id="miniProfile" class="mini-profile">
-            <img src="../profile.png" onerror="this.src='https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png'" alt="Mathy Yuri">
+            <img src="https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png" onerror="this.src='https://via.placeholder.com/100'" alt="Mathy Yuri">
         </div>
         <h1>S+ LOGIC MASTER</h1>
     </div>
@@ -76,7 +76,7 @@
 
     <div id="step0">
         <div class="main-profile-area">
-            <img src="../profile.png" onerror="this.src='https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png'" class="main-profile-img" alt="Mathy Yuri">
+            <img src="https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png" onerror="this.src='https://via.placeholder.com/200'" class="main-profile-img" alt="Mathy Yuri">
             <h2 id="subjectHeading" style="margin-top:15px; font-weight:900; color:var(--primary-dark);">방정식 시리즈</h2>
         </div>
         <div class="card">
@@ -100,10 +100,12 @@
 </div>
 
 <script>
+    // ✅ 1. 과목명(파일명) 설정
     const CURRENT_SUBJECT = "방정식_W1"; 
     document.getElementById('subjectHeading').innerText = "방정식 Master";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMqX71LTT1FwYwIfT2nypgMvcnPCG_DoOtsoEKFvCzH-OO4ztoWl-zS8JkcIr4hf_3iw/exec";
+    // ✅ 2. 새롭게 업데이트된 구글 앱스 스크립트 URL 반영
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoleT3gg2gdtE2XK-EdruzwSMcdKSqwWepsCDoBCjbtfUcOBB3CR6Z7XFgSEZGga5ibg/exec";
     
     let state = { student: {}, currentP: 0, currentS: 0, probDetails: [], attempts: 0, trace: "" };
 
@@ -155,7 +157,9 @@
     function handleAnswer(isCorrect, text) {
         state.attempts++;
         if(isCorrect) {
+            // ✅ 한 단계마다 O,X 기록 (1트 성공 시 O)
             state.probDetails[state.currentP].push(state.attempts === 1 ? "O" : "X");
+            
             const cleanText = text.replace(/\\\\/g, '\\');
             state.trace = (state.trace === "" ? "" : state.trace) + "✔ " + cleanText + "<br>";
             document.getElementById('logicDisplay').innerHTML = state.trace;
@@ -198,19 +202,21 @@
         document.getElementById('finish').style.display = 'block';
         document.getElementById('scoreArea').innerText = totalScore;
         
+        // ✅ 구글 시트로 상세 데이터 전송
         let payload = {
             name: state.student.name,
             className: state.student.className,
             subject: CURRENT_SUBJECT,
-            totalScore: totalScore
+            totalScore: totalScore,
+            d1: state.probDetails[0] ? state.probDetails[0].join(',') : "",
+            d2: state.probDetails[1] ? state.probDetails[1].join(',') : "",
+            d3: state.probDetails[2] ? state.probDetails[2].join(',') : "",
+            d4: state.probDetails[3] ? state.probDetails[3].join(',') : ""
         };
 
-        state.probDetails.forEach((results, idx) => {
-            payload[`d${idx + 1}`] = results.join(',');
-        });
-
         fetch(SCRIPT_URL, {
-            method: 'POST', mode: 'no-cors',
+            method: 'POST', 
+            mode: 'no-cors',
             body: JSON.stringify(payload)
         }).then(() => {
             document.getElementById('statusMsg').innerText = "기록 전송 완료! 고생하셨습니다.";
