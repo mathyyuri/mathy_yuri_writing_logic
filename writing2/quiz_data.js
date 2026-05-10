@@ -1,6 +1,6 @@
 const quizData = [
     {
-        text: "Problem 1: 연립부등식 $\\begin{cases} 3x-4 \\le 4x-2 \\\\ 4x-2 < 2x+4 \\end{cases}$ 을 푸는 과정을 서술하시오.",
+        text: "Problem 1: 연립부등식 $3x-4 \\le 4x-2 < 2x+4$ 을 푸는 과정을 서술하시오.",
         steps: [
             { q: "1단계: 첫 번째 부등식 $3x-4 \\le 4x-2$ 를 정리하면?", options: [{t:"$-x \\le 2$ 이므로 $x \\ge -2$ 이다.", c:true}, {t:"$-x \\le 2$ 이므로 $x \\le -2$ 이다.", c:false}] },
             { q: "2단계: 두 번째 부등식 $4x-2 < 2x+4$ 를 정리하면?", options: [{t:"$2x < 6$ 이므로 $x < 3$ 이다.", c:true}, {t:"$2x < 6$ 이므로 $x > 3$ 이다.", c:false}] },
