@@ -36,6 +36,12 @@
         .option-btn:hover { border-color: var(--accent); background: #fff9c4; }
         input, select { width: 100%; padding: 18px; margin-bottom: 15px; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 1rem; }
         .primary-btn { width: 100%; background: var(--primary); color: #fff; border: none; padding: 20px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
+        
+        /* 결과 모달 스타일 */
+        .modal { display: none; background: #fff; padding: 25px; border-radius: 18px; border: 3px solid var(--primary); margin-top: 20px; text-align: center; animation: fadeIn 0.3s; }
+        .modal-score { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 15px; }
+        .modal-logic { text-align: left; background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--primary); font-size: 1rem; line-height: 1.7; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="tex2jax_process">
@@ -54,8 +60,19 @@
             <div id="probNumDisplay" class="problem-num"></div>
             <div id="probTextDisplay" class="problem-text"></div>
         </div>
-        <div class="trace-box"><div id="logicDisplay" class="trace-content">논리를 구성하세요.</div></div>
+        <div id="traceContainer">
+            <div class="trace-box"><div id="logicDisplay" class="trace-content">논리 구성을 시작하세요.</div></div>
+        </div>
+        
         <div id="questionContainer"></div>
+
+        <div id="resultModal" class="modal">
+            <div class="problem-num" style="font-size: 1.1rem;">PROBLEM CLEAR!</div>
+            <div id="modalScore" class="modal-score"></div>
+            <div class="step-title" style="background: none; padding:0; margin-bottom: 10px;">최종 서술형 답안 복기</div>
+            <div id="modalLogic" class="modal-logic"></div>
+            <button class="primary-btn" onclick="nextProblem()">다음 문항 도전하기 ➔</button>
+        </div>
     </div>
 
     <div id="step0">
@@ -66,13 +83,11 @@
         <div class="card">
             <h3 style="text-align: center; margin-top: 0; color: var(--primary);">STUDENT LOGIN</h3>
             <input type="text" id="userName" placeholder="이름을 입력하세요">
-            
             <select id="userClass">
                 <option value="S+반">S+반</option>
                 <option value="S반">S반</option>
                 <option value="외부생">외부생</option>
             </select>
-            
             <button class="primary-btn" onclick="startApp()">챌린지 입장하기 ✨</button>
         </div>
     </div>
@@ -86,7 +101,6 @@
 </div>
 
 <script>
-    // [과목명 설정] 이 텍스트만 각 폴더에 맞게 수정하시면 됩니다.
     const CURRENT_SUBJECT = "방정식"; 
     document.getElementById('subjectHeading').innerText = CURRENT_SUBJECT;
 
@@ -107,7 +121,13 @@
     function loadProblem() {
         if(!quizData[state.currentP]) return finishQuiz();
         const p = quizData[state.currentP];
-        state.currentS = 0; state.trace = ""; 
+        state.currentS = 0; 
+        state.trace = ""; 
+        
+        document.getElementById('resultModal').style.display = 'none';
+        document.getElementById('questionContainer').style.display = 'block';
+        document.getElementById('traceContainer').style.display = 'block';
+        
         document.getElementById('probNumDisplay').innerText = `Problem ${state.currentP + 1}`;
         document.getElementById('probTextDisplay').innerText = p.text;
         document.getElementById('logicDisplay').innerHTML = "논리 구성을 시작하세요.";
@@ -132,22 +152,46 @@
     function handleAnswer(isCorrect, text) {
         state.attempts++;
         if(isCorrect) {
+            // 점수 기록 (첫 시도 성공 시 O)
             state.probDetails[state.currentP].push(state.attempts === 1 ? "O" : "X");
-            state.trace = (state.trace === "논리 구성을 시작하세요." ? "" : state.trace) + "✔ " + text.replace(/\\\\/g, '\\') + "<br>";
+            
+            // 논리 트레이스 업데이트
+            const cleanText = text.replace(/\\\\/g, '\\');
+            state.trace = (state.trace === "논리 구성을 시작하세요." ? "" : state.trace) + "✔ " + cleanText + "<br>";
             document.getElementById('logicDisplay').innerHTML = state.trace;
             MathJax.typesetPromise();
 
             if(state.currentS < quizData[state.currentP].steps.length - 1) { 
-                state.currentS++; renderStep(); 
+                state.currentS++; 
+                renderStep(); 
             } else {
-                if(state.currentP < quizData.length - 1) { 
-                    state.currentP++; loadProblem(); 
-                } else { 
-                    finishQuiz(); 
-                }
+                showProblemResult(); // 문항 종료 시 결과 표시
             }
         } else { 
-            alert("논리적 오류가 있습니다!"); 
+            alert("논리적 오류가 있습니다! 다시 생각해보세요."); 
+        }
+    }
+
+    // [추가] 문항별 결과 보여주기
+    function showProblemResult() {
+        document.getElementById('questionContainer').style.display = 'none';
+        document.getElementById('traceContainer').style.display = 'none';
+        
+        let pScore = 0;
+        state.probDetails[state.currentP].forEach(res => { if(res === "O") pScore += 2; });
+
+        document.getElementById('modalScore').innerText = `${pScore} / ${state.probDetails[state.currentP].length * 2} 점`;
+        document.getElementById('modalLogic').innerHTML = state.trace;
+        document.getElementById('resultModal').style.display = 'block';
+        MathJax.typesetPromise();
+    }
+
+    function nextProblem() {
+        if(state.currentP < quizData.length - 1) { 
+            state.currentP++; 
+            loadProblem(); 
+        } else { 
+            finishQuiz(); 
         }
     }
 
@@ -166,7 +210,7 @@
             body: JSON.stringify({
                 name: state.student.name,
                 className: state.student.className,
-                subject: CURRENT_SUBJECT, // 과목 데이터도 시트에 전송
+                subject: CURRENT_SUBJECT,
                 d1: state.probDetails[0],
                 d2: state.probDetails[1],
                 d3: state.probDetails[2],
