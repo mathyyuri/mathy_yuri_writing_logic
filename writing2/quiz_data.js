@@ -1,7 +1,7 @@
 // quiz_data.js
 const quizData = [
     {
-        text: "Problem 11: 연립부등식 $\\begin{cases} 3x-4 \\le 4x-2 \\\\ 4x-2 < 2x+4 \\end{cases}$ 을 푸는 과정을 서술하시오.",
+        text: "Problem 1: 연립부등식 $\\begin{cases} 3x-4 \\le 4x-2 \\\\ 4x-2 < 2x+4 \\end{cases}$ 을 푸는 과정을 서술하시오.",
         steps: [
             { q: "1단계: 첫 번째 부등식 $3x-4 \\le 4x-2$ 를 정리하면?", options: [{t:"$-x \\le 2$ 이므로 $x \\ge -2$ 이다.", c:true}, {t:"$-x \\le 2$ 이므로 $x \\le -2$ 이다.", c:false}] },
             { q: "2단계: 두 번째 부등식 $4x-2 < 2x+4$ 를 정리하면?", options: [{t:"$2x < 6$ 이므로 $x < 3$ 이다.", c:true}, {t:"$2x < 6$ 이므로 $x > 3$ 이다.", c:false}] },
@@ -11,7 +11,7 @@ const quizData = [
         ]
     },
     {
-        text: "Problem 13 (적중예상): 부등식 $|x+1| + |x| \\le 3$ 을 푸는 과정을 서술하시오.",
+        text: "Problem 2 (적중예상): 부등식 $|x+1| + |x| \\le 3$ 을 푸는 과정을 서술하시오.",
         steps: [
             { q: "1단계: 절댓값 안이 0이 되는 $x=-1, 0$을 기준으로 구간을 나누면?", options: [{t:"$x < -1$, $-1 \\le x < 0$, $x \\ge 0$ 의 세 경우로 나눈다.", c:true}, {t:"$x < -1$, $x \\ge 0$ 의 두 경우로 나눈다.", c:false}] },
             { q: "2단계: $x < -1$ 일 때, 식을 정리하여 해를 구하면?", options: [{t:"$-2x-1 \\le 3$ 에서 $x \\ge -2$ 이므로, $-2 \\le x < -1$ 이다.", c:true}, {t:"$-2x-1 \\le 3$ 에서 $x \\ge -2$ 이므로, $x \\ge -2$ 전체이다.", c:false}] },
@@ -24,7 +24,7 @@ const quizData = [
         ]
     },
     {
-        text: "Problem 15: 이차부등식 $x^2+kx+9 > 0$ 의 해가 모든 실수가 되도록 하는 $k$의 범위를 구하시오.",
+        text: "Problem 3: 이차부등식 $x^2+kx+9 > 0$ 의 해가 모든 실수가 되도록 하는 $k$의 범위를 구하시오.",
         steps: [
             { q: "1단계: 이차함수의 그래프가 항상 $x$축 위쪽에 있을 조건은?", options: [{t:"그래프가 아래로 볼록하고 $x$축과 만나지 않아야 한다.", c:true}, {t:"그래프가 위로 볼록하고 $x$축과 두 점에서 만나야 한다.", c:false}] },
             { q: "2단계: $x$축과 만나지 않기 위한 판별식 $D$의 조건은?", options: [{t:"교점이 없어야 하므로 $D < 0$ 이어야 한다.", c:true}, {t:"교점이 없어야 하므로 $D > 0$ 이어야 한다.", c:false}] },
@@ -34,7 +34,7 @@ const quizData = [
         ]
     },
     {
-        text: "Problem 17: 연립이차부등식 $\\begin{cases} x^2-4x < 0 \\\\ x^2-4x+3 \\ge 0 \\end{cases}$ 을 푸시오.",
+        text: "Problem 4: 연립이차부등식 $\\begin{cases} x^2-4x < 0 \\\\ x^2-4x+3 \\ge 0 \\end{cases}$ 을 푸시오.",
         steps: [
             { q: "1단계: 첫 번째 식 $x(x-4) < 0$ 의 해를 구하면?", options: [{t:"$0 < x < 4$ 이다.", c:true}, {t:"$x < 0$ 또는 $x > 4$ 이다.", c:false}] },
             { q: "2단계: 두 번째 식 $(x-1)(x-3) \\ge 0$ 의 해를 구하면?", options: [{t:"$x \\le 1$ 또는 $x \\ge 3$ 이다.", c:true}, {t:"$1 \\le x \\le 3$ 이다.", c:false}] },
