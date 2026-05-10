@@ -48,7 +48,7 @@
 <div class="container">
     <div class="header">
         <div id="miniProfile" class="mini-profile">
-            <img src="../공통리소스/profile.png" onerror="this.src='https://via.placeholder.com/100'" alt="Mathy Yuri">
+            <img src="../profile.png" onerror="this.src='https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png'" alt="Mathy Yuri">
         </div>
         <h1>S+ LOGIC MASTER</h1>
     </div>
@@ -76,7 +76,7 @@
 
     <div id="step0">
         <div class="main-profile-area">
-            <img src="../공통리소스/profile.png" onerror="this.src='https://via.placeholder.com/200'" class="main-profile-img" alt="Mathy Yuri">
+            <img src="../profile.png" onerror="this.src='https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png'" class="main-profile-img" alt="Mathy Yuri">
             <h2 id="subjectHeading" style="margin-top:15px; font-weight:900; color:var(--primary-dark);">방정식 시리즈</h2>
         </div>
         <div class="card">
@@ -100,7 +100,6 @@
 </div>
 
 <script>
-    // writing1 전용 과목명
     const CURRENT_SUBJECT = "방정식_W1"; 
     document.getElementById('subjectHeading').innerText = "방정식 Master";
 
@@ -185,7 +184,7 @@
     }
 
     function nextProblem() {
-        state.currentP++; // 다음 문제로 번호 증가
+        state.currentP++; 
         loadProblem();
     }
 
