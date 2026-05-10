@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathy Yuri | S+ LOGIC MASTER</title>
+    <title>Mathy Yuri | S+ LOGIC MASTER (부등식)</title>
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], processEscapes: true },
@@ -37,7 +37,6 @@
         input, select { width: 100%; padding: 18px; margin-bottom: 15px; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 1rem; }
         .primary-btn { width: 100%; background: var(--primary); color: #fff; border: none; padding: 20px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
         
-        /* 결과 모달 스타일 */
         .modal { display: none; background: #fff; padding: 25px; border-radius: 18px; border: 3px solid var(--primary); margin-top: 20px; text-align: center; animation: fadeIn 0.3s; }
         .modal-score { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 15px; }
         .modal-logic { text-align: left; background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--primary); font-size: 1rem; line-height: 1.7; }
@@ -78,7 +77,7 @@
     <div id="step0">
         <div class="main-profile-area">
             <img src="https://raw.githubusercontent.com/mathyyuri/Mathy-Yuri-S-LOGIC-MASTER/main/profile.png" onerror="this.src='https://via.placeholder.com/200'" class="main-profile-img" alt="Mathy Yuri">
-            <h2 id="subjectHeading" style="margin-top:15px; font-weight:900; color:var(--primary-dark);">방정식</h2>
+            <h2 id="subjectHeading" style="margin-top:15px; font-weight:900; color:var(--primary-dark);">방정식 시리즈</h2>
         </div>
         <div class="card">
             <h3 style="text-align: center; margin-top: 0; color: var(--primary);">STUDENT LOGIN</h3>
@@ -101,17 +100,22 @@
 </div>
 
 <script>
-    const CURRENT_SUBJECT = "방정식"; 
-    document.getElementById('subjectHeading').innerText = CURRENT_SUBJECT;
+    // ✅ 1. 과목명(파일명) 설정
+    const CURRENT_SUBJECT = "부등식_W2"; 
+    document.getElementById('subjectHeading').innerText = "2.부등식 Master";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMqX71LTT1FwYwIfT2nypgMvcnPCG_DoOtsoEKFvCzH-OO4ztoWl-zS8JkcIr4hf_3iw/exec";
+    // ✅ 2. 새롭게 업데이트된 구글 앱스 스크립트 URL 반영
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoleT3gg2gdtE2XK-EdruzwSMcdKSqwWepsCDoBCjbtfUcOBB3CR6Z7XFgSEZGga5ibg/exec";
     
-    let state = { student: {}, currentP: 0, currentS: 0, probDetails: [[], [], [], []], attempts: 0, trace: "" };
+    let state = { student: {}, currentP: 0, currentS: 0, probDetails: [], attempts: 0, trace: "" };
 
     function startApp() {
         state.student.name = document.getElementById('userName').value;
         state.student.className = document.getElementById('userClass').value;
         if(!state.student.name) return alert("이름을 입력해 주세요!");
+        
+        state.probDetails = quizData.map(() => []);
+        
         document.getElementById('step0').style.display = 'none';
         document.getElementById('miniProfile').style.display = 'block';
         document.getElementById('quizArea').style.display = 'block';
@@ -142,7 +146,8 @@
         state.attempts = 0;
         let html = `<div class="card"><div class="step-title">${step.q}</div><div class="options">`;
         shuffled.forEach(opt => {
-            html += `<button class="option-btn" onclick="handleAnswer(${opt.c}, '${opt.t.replace(/\\/g, '\\\\')}')">${opt.t}</button>`;
+            const escapedText = opt.t.replace(/\\/g, '\\\\');
+            html += `<button class="option-btn" onclick="handleAnswer(${opt.c}, '${escapedText}')">${opt.t}</button>`;
         });
         container.innerHTML = html + `</div></div>`;
         document.getElementById('progressInner').style.width = ((state.currentP / quizData.length) * 100) + "%";
@@ -152,12 +157,11 @@
     function handleAnswer(isCorrect, text) {
         state.attempts++;
         if(isCorrect) {
-            // 점수 기록 (첫 시도 성공 시 O)
+            // ✅ 한 단계마다 O,X 기록 (1트 성공 시 O)
             state.probDetails[state.currentP].push(state.attempts === 1 ? "O" : "X");
             
-            // 논리 트레이스 업데이트
             const cleanText = text.replace(/\\\\/g, '\\');
-            state.trace = (state.trace === "논리 구성을 시작하세요." ? "" : state.trace) + "✔ " + cleanText + "<br>";
+            state.trace = (state.trace === "" ? "" : state.trace) + "✔ " + cleanText + "<br>";
             document.getElementById('logicDisplay').innerHTML = state.trace;
             MathJax.typesetPromise();
 
@@ -165,34 +169,27 @@
                 state.currentS++; 
                 renderStep(); 
             } else {
-                showProblemResult(); // 문항 종료 시 결과 표시
+                showProblemResult();
             }
         } else { 
             alert("논리적 오류가 있습니다! 다시 생각해보세요."); 
         }
     }
 
-    // [추가] 문항별 결과 보여주기
     function showProblemResult() {
         document.getElementById('questionContainer').style.display = 'none';
         document.getElementById('traceContainer').style.display = 'none';
-        
         let pScore = 0;
         state.probDetails[state.currentP].forEach(res => { if(res === "O") pScore += 2; });
-
-        document.getElementById('modalScore').innerText = `${pScore} / ${state.probDetails[state.currentP].length * 2} 점`;
+        document.getElementById('modalScore').innerText = `${pScore} / ${quizData[state.currentP].steps.length * 2} 점`;
         document.getElementById('modalLogic').innerHTML = state.trace;
         document.getElementById('resultModal').style.display = 'block';
         MathJax.typesetPromise();
     }
 
     function nextProblem() {
-        if(state.currentP < quizData.length - 1) { 
-            state.currentP++; 
-            loadProblem(); 
-        } else { 
-            finishQuiz(); 
-        }
+        state.currentP++; 
+        loadProblem();
     }
 
     function finishQuiz() {
@@ -205,18 +202,22 @@
         document.getElementById('finish').style.display = 'block';
         document.getElementById('scoreArea').innerText = totalScore;
         
+        // ✅ 구글 시트로 상세 데이터 전송
+        let payload = {
+            name: state.student.name,
+            className: state.student.className,
+            subject: CURRENT_SUBJECT,
+            totalScore: totalScore,
+            d1: state.probDetails[0] ? state.probDetails[0].join(',') : "",
+            d2: state.probDetails[1] ? state.probDetails[1].join(',') : "",
+            d3: state.probDetails[2] ? state.probDetails[2].join(',') : "",
+            d4: state.probDetails[3] ? state.probDetails[3].join(',') : ""
+        };
+
         fetch(SCRIPT_URL, {
-            method: 'POST', mode: 'no-cors',
-            body: JSON.stringify({
-                name: state.student.name,
-                className: state.student.className,
-                subject: CURRENT_SUBJECT,
-                d1: state.probDetails[0],
-                d2: state.probDetails[1],
-                d3: state.probDetails[2],
-                d4: state.probDetails[3],
-                totalScore: totalScore
-            })
+            method: 'POST', 
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
         }).then(() => {
             document.getElementById('statusMsg').innerText = "기록 전송 완료! 고생하셨습니다.";
         });
