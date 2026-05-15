@@ -101,10 +101,10 @@
 
 <script>
     // ✅ 과목명 설정
-    const CURRENT_SUBJECT = "경우의_수_Writing_01"; 
-    document.getElementById('subjectHeading').innerText = "경우의 수 Writing 01";
+    const CURRENT_SUBJECT = "경우의_수_Writing_02"; 
+    document.getElementById('subjectHeading').innerText = "경우의 수 Writing 02";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgQIsmuxCVHDmgnTB3_Aw_qjd4cJHZtfUO22qM55RTmF0eZ3o3dbctW6f8nRUVE_yu6A/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoleT3gg2gdtE2XK-EdruzwSMcdKSqwWepsCDoBCjbtfUcOBB3CR6Z7XFgSEZGga5ibg/exec";
     
     let state = { student: {}, currentP: 0, currentS: 0, probDetails: [], attempts: 0, trace: "" };
 
@@ -200,23 +200,22 @@
         document.getElementById('finish').style.display = 'block';
         document.getElementById('scoreArea').innerText = totalScore;
         
-       // ✅ 글자가 시트에 정확히 박히도록 형식을 변환합니다.
-    const params = new URLSearchParams();
-    params.append('name', state.student.name);
-    params.append('className', state.student.className);
-    params.append('subject', CURRENT_SUBJECT);
-    params.append('totalScore', totalScore);
-    params.append('d1', state.probDetails[0] ? state.probDetails[0].join(',') : "");
-    params.append('d2', state.probDetails[1] ? state.probDetails[1].join(',') : "");
-    params.append('d3', state.probDetails[2] ? state.probDetails[2].join(',') : "");
-    params.append('d4', state.probDetails[3] ? state.probDetails[3].join(',') : "");
+        let payload = {
+            name: state.student.name,
+            className: state.student.className,
+            subject: CURRENT_SUBJECT,
+            totalScore: totalScore,
+            d1: state.probDetails[0] ? state.probDetails[0].join(',') : "",
+            d2: state.probDetails[1] ? state.probDetails[1].join(',') : "",
+            d3: state.probDetails[2] ? state.probDetails[2].join(',') : "",
+            d4: state.probDetails[3] ? state.probDetails[3].join(',') : ""
+        };
 
         fetch(SCRIPT_URL, {
             method: 'POST', 
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body:params.toString() // ✅ JSON 대신 문자열 파라미터로 전송
-    }).then(() => {
+            body: JSON.stringify(payload)
+        }).then(() => {
             document.getElementById('statusMsg').innerText = "기록 전송 완료! 고생하셨습니다.";
         });
     }
