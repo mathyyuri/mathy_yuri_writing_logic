@@ -200,22 +200,23 @@
         document.getElementById('finish').style.display = 'block';
         document.getElementById('scoreArea').innerText = totalScore;
         
-        let payload = {
-            name: state.student.name,
-            className: state.student.className,
-            subject: CURRENT_SUBJECT,
-            totalScore: totalScore,
-            d1: state.probDetails[0] ? state.probDetails[0].join(',') : "",
-            d2: state.probDetails[1] ? state.probDetails[1].join(',') : "",
-            d3: state.probDetails[2] ? state.probDetails[2].join(',') : "",
-            d4: state.probDetails[3] ? state.probDetails[3].join(',') : ""
-        };
+       // ✅ 글자가 시트에 정확히 박히도록 형식을 변환합니다.
+    const params = new URLSearchParams();
+    params.append('name', state.student.name);
+    params.append('className', state.student.className);
+    params.append('subject', CURRENT_SUBJECT);
+    params.append('totalScore', totalScore);
+    params.append('d1', state.probDetails[0] ? state.probDetails[0].join(',') : "");
+    params.append('d2', state.probDetails[1] ? state.probDetails[1].join(',') : "");
+    params.append('d3', state.probDetails[2] ? state.probDetails[2].join(',') : "");
+    params.append('d4', state.probDetails[3] ? state.probDetails[3].join(',') : "");
 
         fetch(SCRIPT_URL, {
             method: 'POST', 
             mode: 'no-cors',
-            body: JSON.stringify(payload)
-        }).then(() => {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:params.toString() // ✅ JSON 대신 문자열 파라미터로 전송
+    }).then(() => {
             document.getElementById('statusMsg').innerText = "기록 전송 완료! 고생하셨습니다.";
         });
     }
